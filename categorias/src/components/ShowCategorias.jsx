@@ -8,6 +8,7 @@ const ShowCategorias = () => {
     const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [image, setImage] = useState("");
+    const [title, setTitle] = useState("");
     const [titleModal, setTitleModal] = useState("");
 
     const getCategories = async () => {
@@ -19,10 +20,11 @@ const ShowCategorias = () => {
         getCategories();
     });
 
-    const openModal = (op, name, image) => {
+    const openModal = (op, name, image, title) => {
         setId("");
         setName("");
         setImage("");
+        setTitle("");
         setOperation(op);
 
         if (operation === 1) {
@@ -32,6 +34,60 @@ const ShowCategorias = () => {
             setIdModal(id);
             setNameModal(name);
             setImageModal(image);
+            setTitleModal(title);
+        }
+    }
+
+    const enviarSolicitud = async (url, metodo, parametros) => {
+        let obj = {
+            method: metodo,
+            url: url,
+            data: parametros,
+            headers:{
+                "Content-Type":"application/json",
+                "Accept":"application/json",
+            }
+        };
+        await axios(obj).then(() => {
+            let mensaje;
+
+            if (metodo === "POST"){
+                mensaje = "Se Guardo la Categoria";
+            }else if (metodo === "PUT"){
+                mensaje = "Se Edito la Categoria";
+            }else if (metodo === "DELETE"){
+                mensaje = "Se Elimino la Categoria";
+            }
+            alerta(mensaje, "success");
+            document.getElementById("btnCerrandoModal").click();
+            getCategories();
+        }).catch((error) => {
+            alerta(error, "error");
+            console.log(error);
+        });
+    }
+
+    const validar = () => {
+        let payload;
+        let metodo;
+        let urlAxios;
+
+        if (title === ""){
+            alerta("Escriba el nombre de la categoria", "Warning", "title");
+        }else {
+            payload = {
+                title: title,
+                name: name,
+                image: ["https://i.imgur.com/QkIa5tT.jpeg"]
+            };
+            if (operation === 1){
+                metodo = "POST";
+                urlAxios = "https://api.escuelajs.co/api/v1/categories";
+            } else {
+                metodo = "PUT";
+                urlAxios = "https://api.escuelajs.co/api/v1/categories" + id;
+            }
+            enviarSolicitud(urlAxios, metodo, payload);
         }
     }
 
@@ -56,6 +112,7 @@ const ShowCategorias = () => {
                                 <tr>
                                     <th>#</th>
                                     <th>Id</th>
+                                    <th>Title</th>
                                     <th>Nombre</th>
                                     <th>Imagen</th>
                                 </tr>
@@ -66,10 +123,11 @@ const ShowCategorias = () => {
                                         <tr key={categorie.id}>
                                             <td>{i + 1}</td>
                                             <td>{categorie.id}</td>
+                                            <td>{categorie.title}</td>
                                             <td>{categorie.name}</td>
                                             <td>{categorie.image}</td>
                                             <td>
-                                            <button onClick={() => openModal(2, categories.id, categories.name, categories.image )} className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalCategories'>
+                                            <button onClick={() => openModal(2, categories.id,categories.title, categories.name, categories.image )} className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalCategories'>
                                                 <i className='fa-solid fa-edit' />
                                             </button>
                                             <button onClick={() => deleteProducto(categories.id)} className='btn btn-danger'>
@@ -96,6 +154,10 @@ const ShowCategorias = () => {
                             <div className='imput-group mb-3'>
                                 <span className='input-group-text'><i className='fa-solid fa-gift'/></span>
                                 <imput type="text" id="id" className="form-control" placeholder="id" value={id} onChange={(e) => setId(e.target.value)}/>
+                            </div>
+                            <div className='imput-group mb-3'>
+                                <span className='input-group-text'><i className='fa-solid fa-gift'/></span>
+                                <imput type="text" id="title" className="form-control" placeholder="title" value={title} onChange={(e) => setTitle(e.target.value)}/>
                             </div>
                             <div className='imput-group mb-3'>
                                 <span className='input-group-text'><i className='fa-solid fa-gift'/></span>
