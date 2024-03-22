@@ -10,6 +10,7 @@ const ShowCategorias = () => {
     const [image, setImage] = useState("");
     const [title, setTitle] = useState("");
     const [titleModal, setTitleModal] = useState("");
+    const [operacion, setOperation] = useState(1);
 
     const getCategories = async () => {
         const response = await axios.get(url);
