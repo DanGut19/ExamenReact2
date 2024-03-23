@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import '../functions';
+import { alertaSuccess, alertaError, alertaWarning, alertaConfirmation } from '../functions';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 
@@ -77,7 +77,7 @@ const ShowCategorias = () => {
         let urlAxios;
 
         if (title === ""){
-            alerta("Escriba el nombre de la categoria", "Warning", "title");
+            alertaWarning("Escriba el nombre de la categoria", "Warning", "title");
         }else {
             payload = {
                 title: title,
