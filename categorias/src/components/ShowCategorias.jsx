@@ -36,6 +36,7 @@ const ShowCategorias = () => {
             setNameModal(name);
             setImageModal(image);
             setTitleModal(title);
+            setOperation(2);
         }
     }
 
@@ -90,6 +91,28 @@ const ShowCategorias = () => {
             }
             enviarSolicitud(urlAxios, metodo, payload);
         }
+    }
+
+    const deleteProducto = (id) => {
+        let urlDelete = `https://api.escuelajs.co/api/v1/categories/${id}`;
+
+        const MySwal = withReactContent(Swal);
+        MySwal.fire({
+            title: '¿Está seguro de eliminar el producto?',
+            name: 'question',
+            image: 'No habrá marcha atrás',
+            showCancelButton: true,
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setId(id);
+                enviarSolicitud(urlDelete, 'DELETE', {});
+            }
+        }).catch((error) => {
+            alertaError(error);
+            console.log(error);
+        });
     }
 
     return (
