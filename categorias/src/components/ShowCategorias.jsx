@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { alerta } from '../functions';
+import '../functions';
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2';
 
 const ShowCategorias = () => {
     const url = "https://api.escuelajs.co/api/v1/categories";
@@ -60,11 +62,11 @@ const ShowCategorias = () => {
             }else if (metodo === "DELETE"){
                 mensaje = "Se Elimino la Categoria";
             }
-            alerta(mensaje, "success");
+            alertaError(mensaje, "success");
             document.getElementById("btnCerrandoModal").click();
             getCategories();
         }).catch((error) => {
-            alerta(error, "error");
+            alertaError(error.response.data.message);
             console.log(error);
         });
     }
